@@ -1,21 +1,17 @@
-# Use official Node.js LTS image
-FROM node:18-alpine
-
-# Set working directory
+FROM node:18-alpine AS builder
 WORKDIR /app
-
-# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the application code
 COPY . .
-
-# Build the Next.js app
 RUN npm run build
+# Stage 2: production
+FROM node:18-alpine AS production   
+WORKDIR /app
 
-# Expose port
-EXPOSE 3000
+COPY --from=builder /app/dist ./dist
+# COPY --from=builder /app/.env .env
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY npm run prisma:generate
 
-# Start the Next.js app
-CMD ["npm", "start"]
+CMD ["node", "dist/main"]
