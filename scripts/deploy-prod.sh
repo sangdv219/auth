@@ -10,16 +10,17 @@ echo "[INFO] Using branch: $BRANCH"
 echo "[INFO] Deploying $APP_NAME with image $IMAGE"
 
 # Stop old container
-docker stop $APP_NAME || true
-docker rm $APP_NAME || true
+sudo docker stop $APP_NAME || true
+sudo docker rm $APP_NAME || true
 
 # Pull latest image
-docker pull $IMAGE
+sudo docker pull $IMAGE
 
 # Run new container
-docker run -d --name $APP_NAME -p 80:3000 $IMAGE
+sudo docker run -d --name $APP_NAME -p 80:3000 $IMAGE
 
-docker ps
+sudo docker ps -a
+sudo docker logs $APP_NAME
   # Healthcheck (optional)
 sleep 10
 if curl -fs http://54.252.231.194:3000 >/dev/null; then
