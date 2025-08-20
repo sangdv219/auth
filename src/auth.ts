@@ -1,5 +1,3 @@
-import { db } from "@/lib/db";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 import { getUserById } from "./data/user";
@@ -16,10 +14,7 @@ export const {
   },
   events:{
     async linkAccount({user}){
-      await db.user.update({
-        where: {id: user.id},
-        data: { emailVerified: new Date() }
-      }) 
+     
     }
   },
   callbacks: {
@@ -43,11 +38,10 @@ export const {
       if(!token.sub) return token;
       const existingUser = await getUserById(token.sub)
       if(!existingUser) return token
-      token.role = existingUser.role;
+      // token.role = existingUser.role;
       return token;
     },
   },
-  adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
   ...authConfig,
 });
