@@ -3,7 +3,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run prisma:generate
 RUN npm run build
 # Stage 2: production
 FROM node:18-alpine AS production   
