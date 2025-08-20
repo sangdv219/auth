@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
+set -e  # dừng script nếu lệnh nào fail
 
 BRANCH=${BRANCH:-master}
-IMAGE=ghcr.io/sangdv219/cat:$BRANCH
+IMAGE=ghcr.io/sangdv219/$APP_NAME:$BRANCH
 HOST_PORT=80
 CONTAINER_PORT=3000
 
@@ -23,8 +23,10 @@ sudo docker run -d --name $APP_NAME -p $HOST_PORT:$CONTAINER_PORT $IMAGE
 echo "[INFO] Deployment completed successfully!"
 sudo docker ps -a
 sudo docker logs $APP_NAME
+
+
   # Healthcheck (optional)
-sleep 10
+sleep 5
 if curl -fs http://54.252.231.194:3000 >/dev/null; then
   echo "[INFO] ✅ $APP_NAME is up and healthy on port $APP_PORT"
 else
