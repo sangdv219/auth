@@ -1,0 +1,163 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: 
+      - develop # staging
+      - master  # production
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22.x]
+        os: [ubuntu-latest] # or windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+      # - run: npm install
+      # - run: npm test 
+      # - run: npm run build 
+      # - name: SonarQube Scan
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: npm run sonar 
+
+      - name: DEBUG variable exists yet 
+        env:
+          EC2_USER: ${{secrets.EC2_USER}}
+          EC2_HOST: ${{secrets.EC2_HOST}}
+          EC2_SSH_KEY: ${{secrets.EC2_SSH_KEY}}
+        run: | 
+            echo "View variable secrets"
+                if [ -z "${EC2_USER}" ] || [ -z "${EC2_HOST}" ] || [ -z "${EC2_SSH_KEY}" ]; then
+                  echo "❌ One or more secrets are missing"
+                  exit 1
+            fi
+            echo "✅ EC2_SSH_KEY are set"
+            echo "✅ EC2_HOST are set"
+            echo "✅ EC2_USER are set"
+            echo "✅ All secrets are set"
+        
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Build image
+        run: |
+      
+          docker build -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
+
+      - name: Push image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    needs: build 
+    environment:
+      name: staging
+      url: http://sangduong.io.vn    #util
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Check STAGING host variable
+      run: | 
+            echo "View variable STAGING host"
+              if [ -z "${{vars.DB_HOST_STAGING}}" ]; then
+                  echo "❌ DB_HOST_STAGING is empty"
+              else
+                echo "✅ DB_HOST_STAGING is set: ${{vars.DB_HOST_STAGING}}"
+              fi
+    - name: Log in to GHCR
+      uses: docker/login-action@v3
+      with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }} 
+
+
+    - name: Deploy to EC2 via SSH in Staging
+      if: github.ref == 'refs/heads/develop'
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST  }}
+        username: ${{ secrets.EC2_USER  }}
+        key: ${{ secrets.EC2_SSH_KEY  }}
+        envs: APP_NAME
+        scripts: |
+          echo "[INFO] Start Deploy"
+          bash ./scripts/deploy-staging.sh
+      env:
+          APP_NAME: cat
+
+
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build    # đảm bảo,chắc chắn build pass mới deploy
+    environment:
+      name: production
+      url: http://sangduong.io.vn    #util
+    # steps:
+    #   - run: ./scripts/deploy-prod.sh
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Check PRODUCTION host variable
+      run: | 
+            echo "View variable PRODUCTION host"
+              if [ -z "${{vars.DB_HOST_PROD}}" ]; then
+                  echo "❌ DB_HOST_PROD is empty"
+              else
+                echo "✅ DB_HOST_PROD is set: ${{vars.DB_HOST_PROD}}"
+              fi 
+    - name: Log in to GHCR
+      uses: docker/login-action@v3
+      with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} 
+    - name: Pull 
+      run: |
+            docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+    - name: Deploy prod 
+      if: github.ref == 'refs/heads/master'
+      run: |
+        ssh ubuntu@prod-server 'bash -s' < scripts/deploy-prod.sh  
+
+          
+    # - name: Build & push Docker image
+    #   uses: docker/build-push-action@v6
+    #   with:
+    #     push: true
+    #     tags: ghcr.io/sangduong-dev/nest-postgres:latest
+    #   run: docker build -t cat .
+
+    # - name: Notify
+    #   uses: appleboy/telegram-action@master
+    #   with:
+    #     to: ${{ secrets.TG_CHAT_ID }}
+    #     token: ${{ secrets.TG_BOT_TOKEN }}
+    #     message: "🚨 Deploy failed at ${{ github.sha }}"
+          
+
