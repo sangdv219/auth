@@ -16,7 +16,8 @@ echo "[INFO] Stopping old container if exists..."
 sudo docker stop $APP_NAME || true
 sudo docker rm $APP_NAME || true
 
-# echo "[INFO] Log in to GHCR"
+echo "[INFO] Log in to GHCR"
+echo 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 | docker login ghcr.io -u sangdv219 --password-stdin
 
 echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE
