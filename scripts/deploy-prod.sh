@@ -3,22 +3,24 @@ set -e
 
 BRANCH=${BRANCH:-master}
 IMAGE=ghcr.io/sangdv219/cat:$BRANCH
-PORT=3000
+HOST_PORT=80
+CONTAINER_PORT=3000
 
 echo "[INFO] Using port: $PORT"
 echo "[INFO] Using branch: $BRANCH"
 echo "[INFO] Deploying $APP_NAME with image $IMAGE"
 
-# Stop old container
+echo "[INFO] Stopping old container if exists..."
 sudo docker stop $APP_NAME || true
 sudo docker rm $APP_NAME || true
 
-# Pull latest image
+echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE
 
-# Run new container
-sudo docker run -d --name $APP_NAME -p 80:3000 $IMAGE
+echo "[INFO] Running container..."
+sudo docker run -d --name $APP_NAME -p $HOST_PORT:$CONTAINER_PORT $IMAGE
 
+echo "[INFO] Deployment completed successfully!"
 sudo docker ps -a
 sudo docker logs $APP_NAME
   # Healthcheck (optional)
