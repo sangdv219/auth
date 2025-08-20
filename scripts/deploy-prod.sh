@@ -1,6 +1,7 @@
-#!/bin/bash
+
 set -e  # dừng script nếu lệnh nào fail
 
+APP_NAME=${APP_NAME:-auth}  
 BRANCH=${BRANCH:-master}
 IMAGE=ghcr.io/sangdv219/$APP_NAME:$BRANCH
 HOST_PORT=80
@@ -14,6 +15,8 @@ echo "[INFO] Deploying $APP_NAME with image $IMAGE"
 echo "[INFO] Stopping old container if exists..."
 sudo docker stop $APP_NAME || true
 sudo docker rm $APP_NAME || true
+
+# echo "[INFO] Log in to GHCR"
 
 echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE
