@@ -113,37 +113,42 @@ jobs:
   deploy-prod:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    needs: build    # đảm bảo,chắc chắn build pass mới deploy
+    needs: build 
     environment:
-      name: production
+      name: staging
       url: http://sangduong.io.vn    #util
-    # steps:
-    #   - run: ./scripts/deploy-prod.sh
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Check PRODUCTION host variable
-      run: | 
-            echo "View variable PRODUCTION host"
-              if [ -z "${{vars.DB_HOST_PROD}}" ]; then
-                  echo "❌ DB_HOST_PROD is empty"
-              else
-                echo "✅ DB_HOST_PROD is set: ${{vars.DB_HOST_PROD}}"
-              fi 
+    # - name: Check STAGING host variable
+    #   run: | 
+    #         echo "View variable STAGING host"
+    #           if [ -z "${{vars.DB_HOST_STAGING}}" ]; then
+    #               echo "❌ DB_HOST_STAGING is empty"
+    #           else
+    #             echo "✅ DB_HOST_STAGING is set: ${{vars.DB_HOST_STAGING}}"
+    #           fi
     - name: Log in to GHCR
       uses: docker/login-action@v3
       with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} 
-    - name: Pull 
-      run: |
-            docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-    - name: Deploy prod 
+          password: ${{ secrets.TOKEN }} 
+
+
+    - name: Deploy to EC2 via SSH in Production 
       if: github.ref == 'refs/heads/master'
-      run: |
-        ssh ubuntu@prod-server 'bash -s' < scripts/deploy-prod.sh  
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST  }}
+        username: ${{ secrets.EC2_USER  }}
+        key: ${{ secrets.EC2_SSH_KEY  }}
+        envs: APP_NAME
+        scripts: |
+          echo "[INFO] Start Deploy"
+          bash ./scripts/deploy-prod.sh
+      env:
+          APP_NAME: cat
 
           
     # - name: Build & push Docker image
