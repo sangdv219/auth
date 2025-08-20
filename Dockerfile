@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npm run prisma:generate
 RUN npm run build
 # Stage 2: production
 FROM node:18-alpine AS production   
@@ -12,6 +13,5 @@ COPY --from=builder /app/dist ./dist
 # COPY --from=builder /app/.env .env
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
-RUN npm run prisma:generate
 
 CMD ["node", "dist/main"]
