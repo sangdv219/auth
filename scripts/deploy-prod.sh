@@ -6,7 +6,8 @@ IMAGE=ghcr.io/sangdv219/$APP_NAME:$BRANCH
 HOST_PORT=80
 CONTAINER_PORT=3000
 
-echo "[INFO] Using port: $PORT"
+echo "[INFO] Using container port: $CONTAINER_PORT"
+echo "[INFO] Using host port: $HOST_PORT"
 echo "[INFO] Using branch: $BRANCH"
 echo "[INFO] Deploying $APP_NAME with image $IMAGE"
 

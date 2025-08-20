@@ -106,7 +106,7 @@ jobs:
           echo "[INFO] Start Deploy"
           bash ./scripts/deploy-staging.sh
       env:
-          APP_NAME: cat
+          APP_NAME: auth
 
 
 
@@ -136,19 +136,20 @@ jobs:
           password: ${{ secrets.TOKEN }} 
 
 
-    - name: Deploy to EC2 via SSH in Production 
+    - name: Deploy to EC2 via SSH in Production
       if: github.ref == 'refs/heads/master'
       uses: appleboy/ssh-action@v1.0.0
       with:
-        host: ${{ secrets.EC2_HOST  }}
-        username: ${{ secrets.EC2_USER  }}
-        key: ${{ secrets.EC2_SSH_KEY  }}
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
         envs: APP_NAME
-        # scripts: |
-        #   echo "[INFO] Start Deploy"
-        #   bash ./scripts/deploy-prod.sh
+        scripts: |
+          echo "[INFO] Start Deploy"
+          bash ./scripts/deploy-prod.sh
       env:
-          APP_NAME: cat
+        APP_NAME: cat
+
 
           
     # - name: Build & push Docker image
@@ -156,7 +157,7 @@ jobs:
     #   with:
     #     push: true
     #     tags: ghcr.io/sangduong-dev/nest-postgres:latest
-    #   run: docker build -t cat .
+    #   run: docker build -t auth .
 
     # - name: Notify
     #   uses: appleboy/telegram-action@master
