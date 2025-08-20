@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    image: myapp:latest   # image backend của bạn
+    container_name: app
+    restart: always
+    expose:
+      - "3000"            # chỉ expose nội bộ, không public
+    environment:
+      - NODE_ENV=production
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro   # file config nginx
+      - ./certs:/etc/letsencrypt              # SSL cert (Let's Encrypt hoặc thủ công)
+    depends_on:
+      - app
