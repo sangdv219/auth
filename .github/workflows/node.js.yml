@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-      # - run: npm install
+      # - run: npm ci
       # - run: npm test 
       # - run: npm run build 
       # - name: SonarQube Scan
@@ -151,8 +151,10 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         envs: APP_NAME
         scripts: |
+          echo "---------- Start deploy-prod.sh on EC2 ----------"
           chmod +x /home/ubuntu/scripts/deploy-prod.sh
           bash /home/ubuntu/scripts/deploy-prod.sh
+          echo "---------- Finished deploy-prod.sh ----------"
       env:
         APP_NAME: cat
 

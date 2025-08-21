@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#!/bin/bash
 set -e  # dừng script nếu lệnh nào fail
 
 APP_NAME=${APP_NAME:-auth}  
@@ -26,7 +27,7 @@ sudo docker run -d --name $APP_NAME -p $HOST_PORT:$CONTAINER_PORT $IMAGE
 
 echo "[INFO] Deployment completed successfully!"
 sudo docker ps -a
-sudo docker logs $APP_NAME
+sudo docker logs --tail 20 $APP_NAME
 
 
   # Healthcheck (optional)
