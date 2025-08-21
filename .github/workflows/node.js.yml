@@ -128,6 +128,7 @@ jobs:
                   echo "❌ TOKEN is empty"
               else
                 echo "✅ TOKEN is set: ${{secrets.TOKEN}}"
+                echo "✅ TOKEN is set: ${{vars.TOKEN}}"
               fi
             echo "View variable github.actor"
               if [ -z "${{github.actor}}" ]; then
@@ -141,6 +142,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.TOKEN }} 
+
     - name: Deploy to EC2 via SSH in Production
       if: github.ref == 'refs/heads/master'
       uses: appleboy/ssh-action@v1.0.0
