@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 set -e  # dừng script nếu lệnh nào fail
 
 APP_NAME=${APP_NAME:-auth}  
@@ -17,7 +17,6 @@ sudo docker stop $APP_NAME || true
 sudo docker rm $APP_NAME || true
 
 echo "[INFO] Log in to GHCR"
-echo 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 | docker login ghcr.io -u sangdv219 --password-stdin
 
 echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE
@@ -32,7 +31,7 @@ sudo docker logs $APP_NAME
 
   # Healthcheck (optional)
 sleep 5
-if curl -fs http://54.252.231.194:3000 >/dev/null; then
+if curl -fs http://54.252.231.194 >/dev/null; then
   echo "[INFO] ✅ $APP_NAME is up and healthy on port $APP_PORT"
 else
   echo "[ERROR] ❌ $APP_NAME failed to start" >&2

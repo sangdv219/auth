@@ -108,8 +108,6 @@ jobs:
       env:
           APP_NAME: auth
 
-
-
   deploy-prod:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -139,14 +137,14 @@ jobs:
     - name: Deploy to EC2 via SSH in Production
       if: github.ref == 'refs/heads/master'
       uses: appleboy/ssh-action@v1.0.0
+      runs-on: ubuntu-latest
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         envs: APP_NAME
         scripts: |
-          echo "[INFO] Start Deploy"
-          bash ./scripts/deploy-prod.sh
+          bash /home/ubuntu/scripts/deploy-prod.sh
       env:
         APP_NAME: cat
 
