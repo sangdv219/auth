@@ -156,7 +156,7 @@ jobs:
           bash /home/ubuntu/scripts/deploy-prod.sh
           echo "---------- Finished deploy-prod.sh ----------"
       env:
-        APP_NAME: cat
+        APP_NAME: auth
 
 
           
