@@ -132,10 +132,9 @@ jobs:
     - name: Log in to GHCR
       uses: docker/login-action@v3
       with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.TOKEN }} 
-
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.TOKEN }} 
 
     - name: Deploy to EC2 via SSH in Production
       if: github.ref == 'refs/heads/master'
