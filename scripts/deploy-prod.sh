@@ -22,8 +22,6 @@ echo "[INFO] Log in to GHCR"
 echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE
 
-echo "[INFO] --------------------------------------------------------------------------------------------"
-
 echo "[INFO] Running container..."
 sudo docker run -d --name $APP_NAME -p $HOST_PORT:$CONTAINER_PORT $IMAGE
 
