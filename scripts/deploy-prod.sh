@@ -22,6 +22,8 @@ echo "[INFO] Log in to GHCR"
 echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE
 
+echo "[INFO] --------------------------------------------------------------------------------------------"
+
 echo "[INFO] Running container..."
 sudo docker run -d --name $APP_NAME -p $HOST_PORT:$CONTAINER_PORT $IMAGE
 
@@ -33,9 +35,9 @@ sudo docker logs --tail 20 $APP_NAME
   # Healthcheck (optional)
 sleep 5
 if curl -fs http://54.252.231.194 >/dev/null; then
-  echo "[INFO] ✅ $APP_NAME is up and healthy on port $APP_PORT"
+  echo "[INFO] ✅ http://54.252.231.194 is up and healthy on port $APP_NAME"
 else
-  echo "[ERROR] ❌ $APP_NAME failed to start" >&2
+  echo "[ERROR] ❌ http://54.252.231.194 failed to start" >&2
   exit 1
 fi
 

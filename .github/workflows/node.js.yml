@@ -142,6 +142,16 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.TOKEN }} 
 
+    - name: Copy deploy script to EC2
+      uses: appleboy/scp-action@v0.1.7  
+      with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USER }}
+            key: ${{ secrets.EC2_SSH_KEY }}
+            source: "./scripts/deploy-prod.sh"
+            target: "/home/ubuntu/scripts/"
+
+
     - name: Deploy to EC2 via SSH in Production
       if: github.ref == 'refs/heads/master'
       uses: appleboy/ssh-action@v1.0.0
