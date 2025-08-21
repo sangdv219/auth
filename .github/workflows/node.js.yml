@@ -37,16 +37,19 @@ jobs:
           EC2_USER: ${{secrets.EC2_USER}}
           EC2_HOST: ${{secrets.EC2_HOST}}
           EC2_SSH_KEY: ${{secrets.EC2_SSH_KEY}}
+          TOKEN: ${{secrets.TOKEN}}
+
         run: | 
             echo "View variable secrets"
-                if [ -z "${EC2_USER}" ] || [ -z "${EC2_HOST}" ] || [ -z "${EC2_SSH_KEY}" ]; then
-                  echo "❌ One or more secrets are missing"
+                if [ -z "${EC2_USER}" ] || [ -z "${EC2_HOST}" ] || [ -z "${EC2_SSH_KEY}" ] || [ -z "${TOKEN}" ]; then
+                  echo "❌ One or more secrets was missing"
                   exit 1
             fi
-            echo "✅ EC2_SSH_KEY are set"
-            echo "✅ EC2_HOST are set"
-            echo "✅ EC2_USER are set"
-            echo "✅ All secrets are set"
+            echo "✅ EC2_SSH_KEY was set"
+            echo "✅ EC2_HOST was set"
+            echo "✅ EC2_USER was set"
+            echo "✅ TOKEN was set"
+            echo "✅ All secrets was set"
         
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
