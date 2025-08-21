@@ -128,7 +128,6 @@ jobs:
                   echo "❌ TOKEN is empty"
               else
                 echo "✅ TOKEN is set: ${{secrets.TOKEN}}"
-                echo "✅ TOKEN is set: ${{variable.TOKEN}}"
               fi
             echo "View variable github.actor"
               if [ -z "${{github.actor}}" ]; then
