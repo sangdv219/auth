@@ -26,18 +26,18 @@ jobs:
       - run: npm ci
       # - run: npm test 
       
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [22.x]
-        os: [ubuntu-latest] 
-    steps:
-      # - name: Test unit test
-      # - name: SonarQube Scan 
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: npm run sonar 
+  # test:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node: [22.x]
+  #       os: [ubuntu-latest] 
+  #   steps:
+  #     - name: Test unit test
+  #     - name: SonarQube Scan 
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #       run: npm run sonar 
 
   package:
     runs-on: ubuntu-latest
