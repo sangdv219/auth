@@ -7,8 +7,8 @@ on:
   push:
     branches: 
       - '**' 
-  pull_request:
-    branches: [ "main", "staging" ] # production, staging
+  # pull_request:
+  #   branches: [ "main", "staging" ] # production, staging
 
 jobs:
   lint:
