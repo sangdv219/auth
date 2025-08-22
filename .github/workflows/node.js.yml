@@ -28,6 +28,10 @@ jobs:
       
   lint:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22.x]
+        os: [ubuntu-latest]
     needs: build
     steps:
       - name: Test lint 
