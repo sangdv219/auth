@@ -18,6 +18,7 @@ sudo docker stop $APP_NAME || true
 sudo docker rm $APP_NAME || true
 
 echo "[INFO] Log in to GHCR"
+echo ${{TOKEN}} | docker login ghcr.io -u sangdv219 --password-stdin
 
 echo "[INFO] Pulling latest image..."
 sudo docker pull $IMAGE

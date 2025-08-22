@@ -6,10 +6,9 @@ name: Node.js CI
 on:
   push:
     branches: 
-      - develop # staging
-      - master  # production
+      - '**' 
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ] # production, staging
 
 jobs:
   build:
@@ -24,14 +23,29 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-      # - run: npm ci
+      - run: npm ci
       # - run: npm test 
-      # - run: npm run build 
-      # - name: SonarQube Scan
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: npm run sonar 
+      
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22.x]
+        os: [ubuntu-latest] 
+    steps:
+      - name: Test unit test
+      - name: SonarQube Scan 
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: npm run sonar 
 
+  package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22.x]
+        os: [ubuntu-latest] 
+    steps:
       - name: DEBUG variable exists yet 
         env:
           EC2_USER: ${{secrets.EC2_USER}}
@@ -60,7 +74,6 @@ jobs:
 
       - name: Build image
         run: |
-      
           docker build -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
 
       - name: Push image
@@ -71,13 +84,14 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.sha }}
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
+
   deploy-staging:
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     needs: build 
     environment:
       name: staging
-      url: http://sangduong.io.vn    #util
+      url: ${{vars.URL}}     #util
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -112,12 +126,12 @@ jobs:
           APP_NAME: auth
 
   deploy-prod:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build 
     environment:
       name: staging
-      url: http://54.252.231.194    #util
+      url: ${{vars.URL}}   #util
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -135,12 +149,12 @@ jobs:
               else
                 echo "✅ github.actor is set: ${{github.actor}}"
               fi
-    - name: Log in to GHCR
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.TOKEN }} 
+    # - name: Log in to GHCR
+    #   uses: docker/login-action@v3
+    #   with:
+    #     registry: ghcr.io
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.TOKEN }} 
 
     - name: Deploy to EC2 via SSH in Production
       if: github.ref == 'refs/heads/master'
