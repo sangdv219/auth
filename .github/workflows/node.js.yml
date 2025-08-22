@@ -28,12 +28,10 @@ jobs:
       
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [22.x]
-        os: [ubuntu-latest]
+    
     needs: build
     steps:
+      - uses: actions/checkout@v4
       - name: Test lint 
         run: npm run lint 
 
@@ -41,6 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v4
       - name: SonarQube Scan 
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -50,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v4
       - name: DEBUG variable exists yet 
         env:
           EC2_USER: ${{secrets.EC2_USER}}
