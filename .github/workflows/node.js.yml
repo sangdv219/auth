@@ -128,12 +128,3 @@ jobs:
           echo "---------- Finished deploy-prod.sh ----------"
       env:
         APP_NAME: auth
-
-    # - name: Notify
-    #   uses: appleboy/telegram-action@master
-    #   with:
-    #     to: ${{ secrets.TG_CHAT_ID }}
-    #     token: ${{ secrets.TG_BOT_TOKEN }}
-    #     message: "🚨 Deploy failed at ${{ github.sha }}"
-          
-
