@@ -46,6 +46,7 @@ jobs:
         node: [22.x]
         os: [ubuntu-latest] 
     steps:
+      - uses: actions/checkout@v4
       - name: DEBUG variable exists yet 
         env:
           EC2_USER: ${{secrets.EC2_USER}}
