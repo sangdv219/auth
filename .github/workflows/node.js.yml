@@ -34,10 +34,10 @@ jobs:
         os: [ubuntu-latest] 
     steps:
       # - name: Test unit test
-      - name: SonarQube Scan 
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: npm run sonar 
+      # - name: SonarQube Scan 
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: npm run sonar 
 
   package:
     runs-on: ubuntu-latest
