@@ -25,7 +25,7 @@ export default function Home() {
               type="button"
               className="bg-white text-gray-900 py-4 px-8 rounded-lg cursor-pointer"
             >
-              <Link href="/auth/login">Sign in</Link>
+              <Link href="/auth/login">Sign in_____</Link>
             </Button>
           </LoginButton>
         </div>
