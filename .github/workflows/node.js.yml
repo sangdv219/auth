@@ -82,8 +82,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-
 
   deploy-staging:
     if: github.ref == 'refs/heads/staging'
