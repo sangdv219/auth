@@ -12,6 +12,7 @@ on:
 
 jobs:
   lint:
+    if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/staging'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
