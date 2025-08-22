@@ -5,8 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: 
-      - '**' 
+    branches: [ "main", "staging", "develop", "feature/**" ]
   # pull_request:
   #   branches: [ "main", "staging" ] # production, staging
 
