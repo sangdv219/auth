@@ -106,10 +106,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
+      # - name: Download build artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: build-output
 
       - name: DEBUG variable exists yet 
         env:
@@ -184,7 +184,7 @@ jobs:
         username: ${{ secrets.EC2_USER  }}
         key: ${{ secrets.EC2_SSH_KEY  }}
         envs: APP_NAME
-        scripts: |
+        script: |
           echo "[INFO] Start Deploy"
           bash ./scripts/deploy-staging.sh
       env:
